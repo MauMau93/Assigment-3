@@ -1,27 +1,83 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Title page</title>
+	<title>Assigment 3</title>
 </head>
 <body>
 
-<select onchange="renderTable()">
-	<option id="1">Data 1</option>
-	<option id="2">Data 2</option>
+<!-- Estilos para tabla -->
+<style>
+    table {
+        border-collapse: collapse;
+        border: 2px black solid;
+        font: 12px sans-serif;
+    }
+
+    th, td {
+        border: 1px black solid;
+        padding: 5px;
+    }
+</style>
+
+<select id="selector" onchange="render()">
+	<option value="https://raw.githubusercontent.com/MauMau93/Assigment-3/main/data1.csv">Data 1</option>
+	<option value="https://raw.githubusercontent.com/MauMau93/Assigment-3/main/data2.csv">Data 2</option>
 </select>
+
+<div id="content"></div>
 
 <script src="https://d3js.org/d3.v6.min.js"></script>
 <script type="text/javascript">
-	function renderTable() {
 
-		console.log('render');
+	// render();
 
-		d3.csv("https://raw.githubusercontent.com/MauMau93/2021-02-10-example/main/category-brands.csv", function(data) {
-    
-    		console.log(data);
+	function render() {
+		// Obtener url del archivo que quiero mostrar
+		var url = document.getElementById("selector").value;
 
+		// borrar el conteindo de content para que solamente se muestre la tabla que quiero. de lo contrario, al hacer append se pondria abajo de lo que ya esta en mpantalla. 
+		document.getElementById("content").innerHTML = "";
+
+		d3.csv(url).then(function(data) {
+
+			// The table generation function
+			function tabulate(data, columns) {
+			    var table = d3.select("#content").append("table")
+			        thead = table.append("thead"),
+			        tbody = table.append("tbody");
+
+			    // append the header row
+			    thead.append("tr")
+			        .selectAll("th")
+			        .data(columns)
+			        .enter()
+			        .append("th")
+			            .text(function(column) { return column; });
+
+			    // create a row for each object in the data
+			    var rows = tbody.selectAll("tr")
+			        .data(data)
+			        .enter()
+			        .append("tr");
+
+			    // create a cell in each row for each column
+			    var cells = rows.selectAll("td")
+			        .data(function(row) {
+			            return columns.map(function(column) {
+			                return {column: column, value: row[column]};
+			            });
+			        })
+			        .enter()
+			        .append("td")
+			            .html(function(d) { return d.value; });
+			    
+			    return table;
+			}
+
+			// render the table
+		 	var columns = Object.keys(data[0]);
+		 	var peopleTable = tabulate(data, columns);
 		});
-
 	}
 </script>
 </body>
