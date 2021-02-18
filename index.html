@@ -31,10 +31,10 @@
 
 
 	function render() {
-		// Obtener url del archivo que quiero mostrar
+		// Ontain URL of the file that I want to show
 		var url = document.getElementById("selector").value;
 
-		// borrar el conteindo de content para que solamente se muestre la tabla que quiero. de lo contrario, al hacer append se pondria abajo de lo que ya esta en mpantalla. 
+		// Delete the content of "content" so that i only show the table I wantborrar. If not, when doing append it would be on the bottom of what already is in the screen. 
 		document.getElementById("content").innerHTML = "";
 
 		d3.csv(url).then(function(data) {
